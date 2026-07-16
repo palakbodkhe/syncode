@@ -5,11 +5,11 @@ const cors = require("cors");
 
 const app = express();
 
-const roomRoutes = require("./routes/roomRoutes");
-app.use("/api/room", roomRoutes);
-
 app.use(cors());
 app.use(express.json());
+
+const roomRoutes = require("./routes/roomRoutes");
+app.use("/api/room", roomRoutes);
 
 // Connect to MongoDB
 mongoose

@@ -1,28 +1,36 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import Editor from "@monaco-editor/react";
 
 function Room() {
   const { roomId } = useParams();
   const socketRef = useRef(null);
+  const [code, setCode] = useState("");
 
   useEffect(() => {
-    // Connect to backend socket server
     socketRef.current = io("http://localhost:5000");
-
-    // Join this specific room
     socketRef.current.emit("joinRoom", roomId);
 
-    // Cleanup: disconnect when leaving the page
     return () => {
       socketRef.current.disconnect();
     };
   }, [roomId]);
 
+  const handleEditorChange = (value) => {
+    setCode(value);
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h2>Room: {roomId}</h2>
-      <p>Editor yahan aayega (Phase 4 mein)</p>
+    <div>
+      <h2 style={{ textAlign: "center" }}>Room: {roomId}</h2>
+      <Editor
+        height="80vh"
+        defaultLanguage="javascript"
+        value={code}
+        onChange={handleEditorChange}
+        theme="vs-dark"
+      />
     </div>
   );
 }
